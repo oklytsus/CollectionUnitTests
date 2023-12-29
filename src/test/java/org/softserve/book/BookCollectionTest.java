@@ -9,12 +9,11 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookCollectionTest {
-    private BookCollection bookCollection;
     private ArrayList<Book> testBooks;
     private Set<String> expectedSetCollection;
     private Set<String> actualSetCollection;
     private ArrayList<Book> expectedBookCollection;
-    private ArrayList<Book> actualCollection;
+    private List<Book> actualCollection;
 
     @BeforeAll
     static public void setUpBeforeAll() {
@@ -23,7 +22,6 @@ class BookCollectionTest {
 
     @BeforeEach
     void setUp() {
-        bookCollection = new BookCollection();
         expectedSetCollection = new HashSet<>();
         actualSetCollection = new HashSet<>();
         expectedBookCollection = new ArrayList<>();
@@ -33,7 +31,6 @@ class BookCollectionTest {
 
     @AfterEach
     void tearDown() {
-        bookCollection = null;
         testBooks.clear();
         expectedSetCollection.clear();
         expectedBookCollection.clear();
@@ -50,7 +47,7 @@ class BookCollectionTest {
     void testAuthorCollectionsMatch() {
         List<String> list = List.of("Deborah Harkness", "Jennifer L. Armentrout", "Jane Austen", "Rick Riordan", "J. K. Rowling");
         expectedSetCollection.addAll(list);
-        actualSetCollection = bookCollection.getBooksAuthors(testBooks);
+        actualSetCollection = BookCollection.getBooksAuthors(testBooks);
         assertEquals(expectedSetCollection, actualSetCollection, "Collections should match");
     }
 
@@ -58,13 +55,13 @@ class BookCollectionTest {
     @MethodSource("listAndGenreProvider")
     void testSetCollectionContentSelectedByGenre(String genre, List<String> list) {
         expectedSetCollection.addAll(list);
-        actualSetCollection = bookCollection.getBooksAuthorsByGenre(testBooks, genre);
+        actualSetCollection = BookCollection.getBooksAuthorsByGenre(testBooks, genre);
         assertEquals(expectedSetCollection, actualSetCollection, "Collections should match");
     }
 
     @Test
     void testSetCollectionIsEmptyForIncorrectGenre() {
-        actualSetCollection = bookCollection.getBooksAuthorsByGenre(testBooks, "Romans");
+        actualSetCollection = BookCollection.getBooksAuthorsByGenre(testBooks, "Romans");
         assertTrue(actualSetCollection.isEmpty(), "Collections should be empty");
     }
 
@@ -72,59 +69,59 @@ class BookCollectionTest {
     @MethodSource("listAndYearProvider")
     void testSetCollectionContentSelectedByYear(int year, List<String> list) {
         expectedSetCollection.addAll(list);
-        actualSetCollection = bookCollection.getBooksAuthorsByYear(testBooks, year);
+        actualSetCollection = BookCollection.getBooksAuthorsByYear(testBooks, year);
         assertEquals(expectedSetCollection, actualSetCollection, "Collections should match");
     }
 
     @Test
     void testSetCollectionIsEmptyForIncorrectYear() {
-        actualSetCollection = bookCollection.getBooksAuthorsByYear(testBooks, 2000);
+        actualSetCollection = BookCollection.getBooksAuthorsByYear(testBooks, 2000);
         assertTrue(actualSetCollection.isEmpty(), "Collections should be empty");
     }
 
     @ParameterizedTest
     @MethodSource("objectAndAuthorProvider")
     void testCollectionContentSelectedByAuthor(String author, ArrayList<Book> expectedBookCollection) {
-        actualCollection = bookCollection.selectBooksByAuthor(testBooks, author);
+        actualCollection = BookCollection.selectBooksByAuthor(testBooks, author);
         assertEquals(expectedBookCollection, actualCollection, "Collections should match");
     }
 
     @Test
     void testCollectionIsEmptyForIncorrectAuthor() {
-        actualCollection = bookCollection.selectBooksByAuthor(testBooks, "Jane Marfy");
+        actualCollection = BookCollection.selectBooksByAuthor(testBooks, "Jane Marfy");
         assertTrue(actualCollection.isEmpty(), "Collections should be empty");
     }
 
     @ParameterizedTest
     @MethodSource("objectAndYearProvider")
     void testCollectionContentSelectedByYear(int year, ArrayList<Book> expectedBookCollection) {
-        actualCollection = bookCollection.selectBooksByYear(testBooks, year);
+        actualCollection = BookCollection.selectBooksByYear(testBooks, year);
         assertEquals(expectedBookCollection, actualCollection, "Collections should match");
     }
 
     @Test
     void testCollectionIsEmptyForIncorrectYear() {
-        actualCollection = bookCollection.selectBooksByYear(testBooks, 2000);
+        actualCollection = BookCollection.selectBooksByYear(testBooks, 2000);
         assertTrue(actualCollection.isEmpty(), "Collections should be empty");
     }
 
     @ParameterizedTest
     @MethodSource("objectAndGenreProvider")
     void testCollectionContentSelectedByGenre(String genre, ArrayList<Book> expectedBookCollection) {
-        actualCollection = bookCollection.selectBooksByGenre(testBooks, genre);
+        actualCollection = BookCollection.selectBooksByGenre(testBooks, genre);
         assertEquals(expectedBookCollection, actualCollection, "Collections should match");
     }
 
     @Test
     void testCollectionIsEmptyForIncorrectGenre() {
-        actualCollection = bookCollection.selectBooksByGenre(testBooks, "Romans");
+        actualCollection = BookCollection.selectBooksByGenre(testBooks, "Romans");
         assertTrue(actualCollection.isEmpty(), "Collections should be empty");
     }
 
     @ParameterizedTest
     @MethodSource("objectAndParameterProvider")
     void testCollectionContentAfterRemovalByAuthor(String author, ArrayList<Book> expectedBookCollection) {
-        actualCollection = bookCollection.removeBooksByAuthor(testBooks, author);
+        actualCollection = BookCollection.removeBooksByAuthor(testBooks, author);
         assertEquals(expectedBookCollection, actualCollection, "Collections should match");
     }
 
@@ -132,7 +129,7 @@ class BookCollectionTest {
     @MethodSource("ComparatorProvider")
     void testSortedCollectionContent(String str, Comparator<Book> comparator) {
         testBooks.sort(comparator);
-        actualCollection = bookCollection.sortByComparator(testBooks, comparator);
+        actualCollection = BookCollection.sortByComparator(testBooks, comparator);
         assertEquals(testBooks, actualCollection, "Collections should match");
     }
 
@@ -145,7 +142,7 @@ class BookCollectionTest {
     @Test
     void testTotalNumbersOfMergedCollection() {
         actualCollection = CreateBook.createNewBookCollection();
-        actualCollection = bookCollection.mergeTwoCollections(testBooks, actualCollection);
+        actualCollection = BookCollection.mergeTwoCollections(testBooks, actualCollection);
         assertEquals(10, actualCollection.size(), "Total number of books should be 10");
     }
 
@@ -154,7 +151,7 @@ class BookCollectionTest {
         expectedBookCollection = CreateBook.createBookCollection();
         actualCollection = CreateBook.createNewBookCollection();
         expectedBookCollection.addAll(actualCollection);
-        actualCollection = bookCollection.mergeTwoCollections(testBooks, actualCollection);
+        actualCollection = BookCollection.mergeTwoCollections(testBooks, actualCollection);
         assertEquals(expectedBookCollection, actualCollection, "Collections should match");
     }
 

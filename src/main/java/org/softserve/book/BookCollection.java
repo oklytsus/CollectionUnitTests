@@ -2,137 +2,114 @@ package org.softserve.book;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BookCollection {
-    //Create set of authors to avoid duplicates
-    private Set<String> authors = new HashSet<>();
-    private ArrayList<Book> selectedBooks = new ArrayList<>();
 
-    public Set<String> getBooksAuthors(ArrayList<Book> books) {
-        authors.clear();
-        for (Book book : books) {
-            authors.add(book.getAuthor());
-        }
-        return authors;
+    public static Set<String> getBooksAuthors(List<Book> books) {
+        return books.stream()
+        .map(Book::getAuthor)
+        .collect(Collectors.toSet());
     }
 
-    public Set<String> getBooksAuthorsByGenre(ArrayList<Book> books, String genre) {
-        authors.clear();
-        for (Book book : books) {
-            if (book.getGenre().equalsIgnoreCase(genre)) {
-                authors.add(book.getAuthor());
-            }
-        }
-        return authors;
+    public static Set<String> getBooksAuthorsByGenre(List<Book> books, String genre) {
+        return books.stream()
+        .filter(b -> genre.equalsIgnoreCase(b.getGenre()))
+        .map(Book::getAuthor)
+        .collect(Collectors.toSet());
     }
 
-    public Set<String> getBooksAuthorsByYear(ArrayList<Book> books, int year) {
-        authors.clear();
-        for (Book book : books) {
-            if (book.getYear() == year) {
-                authors.add(book.getAuthor());
-            }
-        }
-        return authors;
+    public static Set<String> getBooksAuthorsByYear(List<Book> books, int year) {
+        return books.stream()
+        .filter(b -> year == b.getYear())
+        .map(Book::getAuthor)
+        .collect(Collectors.toSet());
     }
 
-    public ArrayList<Book> selectBooksByAuthor(ArrayList<Book> books, String author) {
-        selectedBooks.clear();
-        for (Book book : books) {
-            if (book.getAuthor().equalsIgnoreCase(author)) {
-                selectedBooks.add(book);
-            }
-        }
-        return selectedBooks;
+    public static List<Book> selectBooksByAuthor(List<Book> books, String author) {
+        return books.stream()
+        .filter(b -> author.equalsIgnoreCase(b.getAuthor()))
+        .collect(Collectors.toList());
     }
 
-    public ArrayList<Book> selectBooksByYear(ArrayList<Book> books, int year) {
-        selectedBooks.clear();
-        for (Book book : books) {
-            if (book.getYear() == year) {
-                selectedBooks.add(book);
-            }
-        }
-        return selectedBooks;
+    public static List<Book> selectBooksByYear(List<Book> books, int year) {
+        return books.stream()
+        .filter(b -> year == b.getYear())
+        .collect(Collectors.toList());
     }
 
-    public ArrayList<Book> selectBooksByGenre(ArrayList<Book> books, String genre) {
-        selectedBooks.clear();
-        for (Book book : books) {
-            if (book.getGenre().equalsIgnoreCase(genre)) {
-                selectedBooks.add(book);
-            }
-        }
-        return selectedBooks;
+    public static List<Book> selectBooksByGenre(List<Book> books, String genre) {
+        return books.stream()
+        .filter(b -> genre.equalsIgnoreCase(b.getGenre()))
+        .collect(Collectors.toList());
     }
 
-    public ArrayList<Book> removeBooksByAuthor(ArrayList<Book> books, String author) {
+    public static List<Book> removeBooksByAuthor(List<Book> books, String author) {
         books.removeIf(book -> book.getAuthor().equalsIgnoreCase(author));
         return books;
     }
 
-    public ArrayList<Book> sortByComparator (ArrayList<Book> books, Comparator<Book> comparator){
+    public static List<Book> sortByComparator (List<Book> books, Comparator<Book> comparator){
         books.sort(comparator);
         return books;
     }
 
-    public ArrayList<Book> mergeTwoCollections(ArrayList<Book> books1, ArrayList<Book> books2) {
-        books1.addAll(books2);
-        return books1;
+    public static List<Book> mergeTwoCollections(List<Book> books1, List<Book> books2) {
+        List<Book> merged = new ArrayList<>();
+        merged.addAll(books1);
+        merged.addAll(books2);
+        return merged;
     }
 
-    static class BookCollectionMain {
+    public static class BookCollectionMain {
         public static void main(String[] args) {
             //Create bookCollection
             ArrayList<Book> books = CreateBook.createBookCollection();
 
-            //Create the object of BookCollection
-            BookCollection collection=new BookCollection();
-
             //1. Print the list of all authors in the collection to the console.
-            System.out.println("Authors: " + collection.getBooksAuthors(books));
+            System.out.println("Authors: " + getBooksAuthors(books));
 
             //2. Print the list of authors who have written books in a given genre.
             String genre = "Adventure";
             System.out.println("\n" + genre + " genre Authors:");
-            System.out.println(collection.getBooksAuthorsByGenre(books, genre));
+            System.out.println(getBooksAuthorsByGenre(books, genre));
 
 
             //3. Print the list of authors whose books were published in a given year.
             int year = 2020;
             System.out.println("\nAuthors whose books were published in a " + year + ":");
-            System.out.println(collection.getBooksAuthorsByYear(books, year));
+            System.out.println(getBooksAuthorsByYear(books, year));
 
             //4. Find a book in the collection written by a given author.
             String author = "Jane Austen";
 
             //Create Books Collection to store selected books
-            ArrayList<Book> newBooksCollection = new ArrayList<>();
+            List<Book> newBooksCollection = new ArrayList<>();
 
-            newBooksCollection = collection.selectBooksByAuthor(books, author);
+            newBooksCollection = selectBooksByAuthor(books, author);
             System.out.println("\nBooks of " + author + ":");
             for (Book book : newBooksCollection) {
                 System.out.println(book);
             }
 
             //5. Find all books that were written in a given year.
-            newBooksCollection = collection.selectBooksByYear(books, year);
+            newBooksCollection = selectBooksByYear(books, year);
             System.out.println("\nBooks published in a " + year + ":");
             for (Book book : newBooksCollection) {
                 System.out.println(book);
             }
 
             //6. Find all books that belong to a given genre.
-            newBooksCollection = collection.selectBooksByGenre(books, genre);
+            newBooksCollection = selectBooksByGenre(books, genre);
             System.out.println("\n" + genre + " genre Books:");
             for (Book book : newBooksCollection) {
                 System.out.println(book);
             }
 
             //7. Remove from the collection all books written by a given author.
-            collection.removeBooksByAuthor(books, author);
+            removeBooksByAuthor(books, author);
             System.out.println("\nBooks collection after deletion books of " + author + ":");
             for (Book book : books) {
                 System.out.println(book);
@@ -146,7 +123,7 @@ public class BookCollection {
             Comparator<Book> byYear = Comparator.comparing(Book::getYear);
 
             //sort by Title
-            collection.sortByComparator(books,byTitle);
+            sortByComparator(books,byTitle);
             //books.sort(byTitle);
             System.out.println("\nBooks collection sorted by Tittle:");
             for (Book book : books) {
@@ -154,7 +131,7 @@ public class BookCollection {
             }
 
             //sort by Author
-            collection.sortByComparator(books,byAuthor);
+            sortByComparator(books,byAuthor);
             //books.sort(byAuthor);
             System.out.println("\nBooks collection sorted by Author:");
             for (Book book : books) {
@@ -162,7 +139,7 @@ public class BookCollection {
             }
 
             //sort by Genre
-            collection.sortByComparator(books,byGenre);
+            sortByComparator(books,byGenre);
             //books.sort(byGenre);
             System.out.println("\nBooks collection sorted by Genre:");
             for (Book book : books) {
@@ -170,7 +147,7 @@ public class BookCollection {
             }
 
             //sort by Year
-            collection.sortByComparator(books,byYear);
+            sortByComparator(books,byYear);
             //books.sort(byYear);
             System.out.println("\nBooks collection sorted by Year:");
             for (Book book : books) {
@@ -186,7 +163,7 @@ public class BookCollection {
             }
 
             //Add books from both collection to new one
-            ArrayList<Book> mergedBookCollection = collection.mergeTwoCollections(books, newCollection);
+            List<Book> mergedBookCollection = mergeTwoCollections(books, newCollection);
 
             System.out.println("\nBooks collection after merge with another Book Collection:");
             for (Book book : mergedBookCollection) {
@@ -194,7 +171,7 @@ public class BookCollection {
             }
 
             //10. Create a subCollection of books from a given genre.
-            newBooksCollection = collection.selectBooksByGenre(mergedBookCollection, genre);
+            newBooksCollection = selectBooksByGenre(mergedBookCollection, genre);
             System.out.println("\n" + genre + " genre Books:");
             for (Book book : newBooksCollection) {
                 System.out.println(book);
